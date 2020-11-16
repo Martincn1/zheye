@@ -1,13 +1,6 @@
 <template>
   <div class="validate-input-container pb-3">
-    <input 
-      type="text" 
-      class="form-control" 
-      :class="{'is-invalid': inputRef.error}" 
-      :value="inputRef.val"
-      @blur="validateInput"
-      @input="updateValue"
-    >
+    <input v-bind="$attrs" class="form-control" :class="{'is-invalid': inputRef.error}" :value="inputRef.val" @blur="validateInput" @input="updateValue">
     <span v-if="inputRef.error" class="invalid-feedback">{{inputRef.message}}</span>
   </div>
 </template>
@@ -15,25 +8,27 @@
 <script lang="ts">
 import { defineComponent, reactive, PropType } from 'vue'
 const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+const passwordReg = /(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{6,16}/
 interface RuleProp {
-  type: 'required' | 'email';
+  type: 'required' | 'email' | 'password';
   message: string;
 }
 export type RulesProp = RuleProp[]
 export default defineComponent({
   props: {
     rules: Array as PropType<RulesProp>,
-    modelValue: String //第一步设置modelValue属性
+    modelValue: String // 第一步设置modelValue属性
   },
-  name: '',
+  inheritAttrs: false, // 不让根元素继承属性
   setup (props, context) {
+    console.log(context.attrs)
     const inputRef = reactive({
       val: props.modelValue || '',
       error: false,
       message: ''
     })
     // vue3.0v-model版本
-    const updateValue = (e: KeyboardEvent ) => {
+    const updateValue = (e: KeyboardEvent) => {
       const targetValue = (e.target as HTMLInputElement).value
       inputRef.val = targetValue
       // 第二部update:modelValue事件
@@ -50,6 +45,9 @@ export default defineComponent({
               break
             case 'email':
               passed = emailReg.test(inputRef.val)
+              break
+            case 'password':
+              passed = passwordReg.test(inputRef.val)
               break
             default:
               break

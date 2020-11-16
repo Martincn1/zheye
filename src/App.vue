@@ -5,16 +5,11 @@
     <form action="">
       <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Email address</label>
-        <validate-input :rules="emailRules" v-model=" emailVal"></validate-input>
-        {{emailVal}}
+        <validate-input type="text" placeholder="请输入邮箱" :rules="emailRules" v-model="emailVal"></validate-input>
       </div>
       <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1">
-      </div>
-      <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+        <ValidateInput placeholder="请输入密码" type="password" :rules="passwordRules" v-model="passwordVal"></ValidateInput>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
@@ -63,16 +58,23 @@ const currentUser: UserProps = {
 export default defineComponent({
   name: 'App',
   setup () {
-    const emailVal = ref('Viking')
+    const emailVal = ref('')
+    const passwordVal = ref('')
     const emailRules: RulesProp = [
       { type: 'required', message: '电子邮箱地址不能为空' },
       { type: 'email', message: '请输入正确的电子邮箱格式' }
+    ]
+    const passwordRules: RulesProp = [
+      { type: 'required', message: '密码不能为空' },
+      { type: 'password', message: '密码必须由数字、字母、特殊字符组合,请输入6-16位' }
     ]
     return {
       list: testData,
       currentUser,
       emailRules,
-      emailVal
+      emailVal,
+      passwordRules,
+      passwordVal
     }
   },
   components: {
